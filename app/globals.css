@@ -1,0 +1,6 @@
+:root { color-scheme: light dark; }
+body { font-family: system-ui, sans-serif; margin: 0; padding: 24px; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; font-size: 14px; }
+th { background: rgba(127,127,127,0.15); }
+button { padding: 10px 16px; font-size: 15px; cursor: pointer; }
