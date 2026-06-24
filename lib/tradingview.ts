@@ -1,9 +1,4 @@
-import {
-  TV_COLUMNS,
-  TV_FILTERS,
-  TV_SCAN_URL,
-  TV_USER_AGENT,
-} from "./config";
+import { TV_COLUMNS, TV_FILTERS, TV_SCAN_URL } from "./config";
 
 export type ScanRow = {
   ticker: string;
@@ -76,11 +71,23 @@ export function parseScanResponse(json: unknown): ScanRow[] {
 }
 
 export async function fetchScan(opts: BuildOpts = {}): Promise<ScanRow[]> {
+  const TV_SESSION_ID = process.env.TV_SESSION_ID;
+  const TV_SESSION_SIGN = process.env.TV_SESSION_SIGN;
+  if (!TV_SESSION_ID || !TV_SESSION_SIGN) {
+    throw new Error(
+      "Missing TV_SESSION_ID or TV_SESSION_SIGN env vars. Set both to TradingView session cookies before calling fetchScan.",
+    );
+  }
+
   const res = await fetch(TV_SCAN_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "User-Agent": TV_USER_AGENT,
+      Cookie: `sessionid=${TV_SESSION_ID}; sessionid_sign=${TV_SESSION_SIGN}`,
+      "User-Agent":
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+      Origin: "https://www.tradingview.com",
+      Referer: "https://www.tradingview.com/",
     },
     body: JSON.stringify(buildScanRequest(opts)),
     cache: "no-store",

@@ -19,7 +19,10 @@ export const TV_FILTERS = [
   { left: "type", operation: "equal", right: "stock" },
 ] as const;
 
-export const TV_SCAN_URL = "https://scan.tradingview.com/america/scan";
+// TradingView uses an authenticated scanner endpoint with session cookies.
+// Keep TV_SESSION_ID and TV_SESSION_SIGN current by refreshing them from
+// browser DevTools → Application → Cookies → tradingview.com.
+export const TV_SCAN_URL = "https://scanner.tradingview.com/america/scan";
 export const TV_USER_AGENT =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36";
 

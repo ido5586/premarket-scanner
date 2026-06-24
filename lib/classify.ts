@@ -1,6 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { CLASSIFIER_MODEL } from "./config";
-import type { Headline } from "./finnhub";
+import type { Headline } from "./news";
 
 export type Catalyst = {
   catalystType: "real" | "pump" | "dilution";
@@ -72,7 +72,10 @@ export async function classifyTicker(
   const client = new Anthropic({ apiKey });
   const headlineText = headlines
     .slice(0, 15)
-    .map((h, i) => `${i + 1}. ${h.headline}${h.summary ? " - " + h.summary : ""}`)
+    .map((h, i) => {
+      const sourceLabel = h.source === "yahoo" ? "Yahoo" : "Finnhub";
+      return `${i + 1}. [${sourceLabel}] ${h.headline}${h.summary ? " - " + h.summary : ""}`;
+    })
     .join("\n");
 
   const userContent =
