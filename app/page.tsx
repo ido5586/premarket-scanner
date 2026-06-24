@@ -17,7 +17,8 @@ export default async function Home() {
   try {
     rows = await getLatestRun();
   } catch (err) {
-    loadError = err instanceof Error ? err.message : "Failed to load latest scan";
+    console.error("[page] getLatestRun failed:", err);
+    loadError = "Could not load the latest scan.";
   }
 
   return (
@@ -29,7 +30,7 @@ export default async function Home() {
       </form>
 
       {loadError ? (
-        <p style={{ color: "crimson" }}>Could not load latest scan: {loadError}</p>
+        <p style={{ color: "crimson" }}>{loadError}</p>
       ) : rows.length === 0 ? (
         <p>No results yet. Run a scan during US pre-market.</p>
       ) : (

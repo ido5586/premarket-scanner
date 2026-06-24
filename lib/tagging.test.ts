@@ -19,10 +19,22 @@ describe("tagRow", () => {
     expect(tagRow(row({ marketCap: null })).marketCapBucket).toBe("unknown");
   });
 
+  it("buckets market cap at the micro/small/mid_plus boundaries", () => {
+    expect(tagRow(row({ marketCap: 49_999_999 })).marketCapBucket).toBe("micro");
+    expect(tagRow(row({ marketCap: 50_000_000 })).marketCapBucket).toBe("small");
+    expect(tagRow(row({ marketCap: 300_000_000 })).marketCapBucket).toBe("small");
+    expect(tagRow(row({ marketCap: 300_000_001 })).marketCapBucket).toBe("mid_plus");
+  });
+
   it("buckets price", () => {
     expect(tagRow(row({ price: 3 })).priceBucket).toBe("penny");
     expect(tagRow(row({ price: 50 })).priceBucket).toBe("normal");
     expect(tagRow(row({ price: null })).priceBucket).toBe("unknown");
+  });
+
+  it("buckets price at the penny/normal boundary", () => {
+    expect(tagRow(row({ price: 4.99 })).priceBucket).toBe("penny");
+    expect(tagRow(row({ price: 5 })).priceBucket).toBe("normal");
   });
 
   it("flags thin volume only when volume is at or below the threshold", () => {
