@@ -15,6 +15,17 @@ function formatScanTimestamp(scannedAt: string): string {
   return `${day}/${month}/${year} בשעה ${hour}:${minute}`;
 }
 
+function formatScanColumn(scannedAt: string): string {
+  const date = new Date(scannedAt);
+  const opts = { timeZone: "Asia/Jerusalem" } as const;
+  const day = new Intl.DateTimeFormat("he-IL", { ...opts, day: "2-digit" }).format(date);
+  const month = new Intl.DateTimeFormat("he-IL", { ...opts, month: "2-digit" }).format(date);
+  const year = new Intl.DateTimeFormat("he-IL", { ...opts, year: "numeric" }).format(date);
+  const hour = new Intl.DateTimeFormat("he-IL", { ...opts, hour: "2-digit", hour12: false }).format(date);
+  const minute = new Intl.DateTimeFormat("he-IL", { ...opts, minute: "2-digit" }).format(date);
+  return `${day}/${month}/${year} ${hour}:${minute}`;
+}
+
 function flag(rec: ScanRecord): string {
   const f: string[] = [];
   if (rec.catalyst_type === "dilution") f.push("🚩");
@@ -50,6 +61,7 @@ export default async function Home() {
           <table>
             <thead>
               <tr>
+                <th>זמן סריקה</th>
                 <th>Ticker</th>
                 <th>Pre %</th>
                 <th>Price</th>
@@ -62,7 +74,17 @@ export default async function Home() {
             <tbody>
               {rows.map((r) => (
                 <tr key={r.ticker}>
-                  <td>{r.ticker}</td>
+                  <td>{formatScanColumn(r.scanned_at)}</td>
+                  <td>
+                    <a
+                      href={`https://finance.yahoo.com/quote/${r.ticker}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ color: "blue", textDecoration: "underline" }}
+                    >
+                      {r.ticker}
+                    </a>
+                  </td>
                   <td>{formatPct(r.premarket_pct)}</td>
                   <td>{formatPrice(r.price)}</td>
                   <td>{formatMarketCap(r.market_cap)}</td>
