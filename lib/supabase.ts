@@ -14,6 +14,7 @@ export type ScanRecord = {
   price_bucket: string;
   sector: string | null;
   catalyst_type: string;
+  scanned_at: string;
   catalyst_label_he: string;
   catalyst_reason_he: string;
 };
