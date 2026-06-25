@@ -19,3 +19,11 @@ export function formatPrice(n: number | null): string {
   if (n == null) return "?";
   return `$${n.toFixed(2)}`;
 }
+
+// Share float, stored in millions of shares. e.g. 1.2 -> "1.2M", 0.456 -> "456K".
+export function formatFloat(millions: number | null): string {
+  if (millions == null) return "?";
+  if (millions >= 1000) return `${(millions / 1000).toFixed(1)}B`;
+  if (millions >= 1) return `${millions.toFixed(1)}M`;
+  return `${Math.round(millions * 1000)}K`;
+}

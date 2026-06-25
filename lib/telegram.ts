@@ -1,5 +1,11 @@
 import { TELEGRAM_API_BASE } from "./config";
-import { formatMarketCap, formatVolume, formatPct, formatPrice } from "./format";
+import {
+  formatMarketCap,
+  formatVolume,
+  formatPct,
+  formatPrice,
+  formatFloat,
+} from "./format";
 
 export type AlertItem = {
   ticker: string;
@@ -10,6 +16,8 @@ export type AlertItem = {
   volumeThin: boolean;
   catalystType: "real" | "pump" | "dilution";
   catalystLabelHe: string;
+  floatShares: number | null;
+  momentumScore: number | null;
 };
 
 const NO_GAPPERS = "אין מניות פרה-מרקט עם עלייה מעל 90% היום.";
@@ -30,6 +38,7 @@ export function buildAlertMessage(items: AlertItem[]): string {
     const lines = [
       `${it.ticker} ${formatPct(it.premarketPct)}${flagStr}`,
       `מחיר: ${formatPrice(it.price)} | שווי שוק: ${formatMarketCap(it.marketCap)} | נפח פרה-מרקט: ${formatVolume(it.premarketVolume)}`,
+      `פלוט: ${formatFloat(it.floatShares)} | ציון מומנטום: ${it.momentumScore ?? "?"}`,
       `קטליסט: ${it.catalystLabelHe}`,
     ];
     return lines.join("\n");

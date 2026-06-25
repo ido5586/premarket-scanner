@@ -17,6 +17,8 @@ export type ScanRecord = {
   scanned_at: string;
   catalyst_label_he: string;
   catalyst_reason_he: string;
+  float_shares: number | null;
+  momentum_score: number | null;
 };
 
 let cached: SupabaseClient | null = null;
@@ -67,5 +69,15 @@ export async function getLatestRun(): Promise<ScanRecord[]> {
     .eq("scan_run_id", runId)
     .order("premarket_pct", { ascending: false });
   if (e2) throw new Error(`Supabase latest-run rows failed: ${e2.message}`);
+  return (data ?? []) as ScanRecord[];
+}
+
+export async function getAllScans(limit = 500): Promise<ScanRecord[]> {
+  const { data, error } = await getServerClient()
+    .from("premarket_scans")
+    .select("*")
+    .order("scanned_at", { ascending: false })
+    .limit(limit);
+  if (error) throw new Error(`Supabase history lookup failed: ${error.message}`);
   return (data ?? []) as ScanRecord[];
 }

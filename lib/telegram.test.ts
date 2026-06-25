@@ -5,7 +5,7 @@ function item(p: Partial<AlertItem>): AlertItem {
   return {
     ticker: "AAA", premarketPct: 120, price: 4, marketCap: 30_000_000,
     premarketVolume: 800_000, volumeThin: false, catalystType: "pump",
-    catalystLabelHe: "אין חדשות", ...p,
+    catalystLabelHe: "אין חדשות", floatShares: 3.2, momentumScore: 55, ...p,
   };
 }
 

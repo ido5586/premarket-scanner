@@ -3,6 +3,8 @@ import { fetchScan } from "./tradingview";
 import { tagRow } from "./tagging";
 import { fetchCompanyNews } from "./finnhub";
 import { classifyTicker } from "./classify";
+import { fetchFloat } from "./float";
+import { calculateScore } from "./score";
 import { insertScanRecords, type ScanRecord } from "./supabase";
 import { sendAlert, type AlertItem } from "./telegram";
 import { getEtParts } from "./time";
@@ -38,8 +40,19 @@ export async function runScan(
   // Classify sequentially to respect Finnhub (~60/min) and Anthropic limits.
   for (const row of kept) {
     const tags = tagRow(row);
+    // Float scrape has no rate limit, so kick it off up front and let the
+    // rate-limited news + classify chain run while it resolves.
+    const floatPromise = fetchFloat(row.ticker);
     const headlines = await fetchCompanyNews(row.ticker, now);
     const catalyst = await classifyTicker(row.ticker, headlines);
+    const floatShares = await floatPromise;
+
+    const momentumScore = calculateScore({
+      premarketPct: row.premarketPct,
+      premarketVolume: row.premarketVolume,
+      marketCap: row.marketCap,
+      floatShares,
+    });
 
     records.push({
       scan_run_id: scanRunId,
@@ -58,6 +71,8 @@ export async function runScan(
       catalyst_type: catalyst.catalystType,
       catalyst_label_he: catalyst.labelHe,
       catalyst_reason_he: catalyst.reasonHe,
+      float_shares: floatShares,
+      momentum_score: momentumScore,
     });
 
     items.push({
@@ -69,6 +84,8 @@ export async function runScan(
       volumeThin: tags.volumeThin,
       catalystType: catalyst.catalystType,
       catalystLabelHe: catalyst.labelHe,
+      floatShares,
+      momentumScore,
     });
   }
 
