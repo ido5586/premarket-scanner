@@ -44,6 +44,7 @@ export async function runScan(
     records.push({
       scan_run_id: scanRunId,
       scan_date: scanDate,
+      scanned_at: new Date().toISOString(),
       ticker: row.ticker,
       company_name: row.companyName,
       premarket_pct: row.premarketPct,
