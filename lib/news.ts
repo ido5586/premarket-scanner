@@ -71,7 +71,7 @@ async function fetchFinnhubNews(ticker: string, now: Date): Promise<Headline[]> 
         return {
           headline,
           summary,
-          source: "finnhub",
+          source: "finnhub" as const,
           publishedAt: datetime,
         };
       })
@@ -98,7 +98,7 @@ function parseYahooRss(xml: string, now: Date): Headline[] {
       const publishedAt = Math.floor(Date.parse(pubDateText) / 1000);
       if (!title || Number.isNaN(publishedAt)) continue;
       if (publishedAt < nowSeconds - NEWS_WINDOW_SECONDS || publishedAt > nowSeconds) continue;
-      headlines.push({ headline: title, source: "yahoo", publishedAt });
+      headlines.push({ headline: title, source: "yahoo" as const, publishedAt });
     }
     return headlines;
   }
@@ -116,7 +116,7 @@ function parseYahooRss(xml: string, now: Date): Headline[] {
     const publishedAt = Math.floor(Date.parse(pubDateMatch[1].trim()) / 1000);
     if (!title || Number.isNaN(publishedAt)) continue;
     if (publishedAt < nowSeconds - NEWS_WINDOW_SECONDS || publishedAt > nowSeconds) continue;
-    headlines.push({ headline: title, source: "yahoo", publishedAt });
+    headlines.push({ headline: title, source: "yahoo" as const, publishedAt });
   }
   return headlines;
 }
