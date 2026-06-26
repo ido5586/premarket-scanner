@@ -27,14 +27,14 @@ describe("tagRow", () => {
   });
 
   it("buckets price", () => {
-    expect(tagRow(row({ price: 3 })).priceBucket).toBe("penny");
+    expect(tagRow(row({ price: 1 })).priceBucket).toBe("penny");
     expect(tagRow(row({ price: 50 })).priceBucket).toBe("normal");
     expect(tagRow(row({ price: null })).priceBucket).toBe("unknown");
   });
 
   it("buckets price at the penny/normal boundary", () => {
-    expect(tagRow(row({ price: 4.99 })).priceBucket).toBe("penny");
-    expect(tagRow(row({ price: 5 })).priceBucket).toBe("normal");
+    expect(tagRow(row({ price: 1.49 })).priceBucket).toBe("penny");
+    expect(tagRow(row({ price: 1.5 })).priceBucket).toBe("normal");
   });
 
   it("flags thin volume only when volume is at or below the threshold", () => {

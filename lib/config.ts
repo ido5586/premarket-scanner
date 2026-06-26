@@ -32,9 +32,12 @@ export const CLASSIFIER_MODEL = "claude-haiku-4-5";
 
 // Filtering and tagging thresholds.
 export const MIN_PREMARKET_PCT = 90;
+export const MIN_PRICE_USD = 1.5;
 export const MARKET_CAP_MICRO_MAX = 50_000_000;
 export const MARKET_CAP_SMALL_MAX = 300_000_000;
-export const PENNY_PRICE_MAX = 5;
+// Matches MIN_PRICE_USD: results are pre-filtered to >= 1.5, so "penny" only
+// ever tags a row priced exactly at the floor edge cases.
+export const PENNY_PRICE_MAX = 1.5;
 export const THIN_VOLUME_MAX = 1_000_000;
 
 export const TELEGRAM_API_BASE = "https://api.telegram.org";

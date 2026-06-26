@@ -8,7 +8,7 @@ import { calculateScore } from "./score";
 import { insertScanRecords, type ScanRecord } from "./supabase";
 import { sendAlert, type AlertItem } from "./telegram";
 import { getEtParts } from "./time";
-import { MIN_PREMARKET_PCT } from "./config";
+import { MIN_PREMARKET_PCT, MIN_PRICE_USD } from "./config";
 
 export type RunResult = {
   scanRunId: string;
@@ -28,9 +28,14 @@ export async function runScan(
   );
 
   const rows = await fetchScan({ includePremarketFilter: true, range: [0, 100] });
-  // Defensive second filter: keep only confirmed >90% movers.
+  // Defensive second filter: keep only confirmed >90% movers priced at or above
+  // the minimum. Sub-$1.50 stocks never reach tagging, Telegram, or Supabase.
   const kept = rows.filter(
-    (r) => r.premarketPct != null && r.premarketPct > MIN_PREMARKET_PCT,
+    (r) =>
+      r.premarketPct != null &&
+      r.premarketPct > MIN_PREMARKET_PCT &&
+      r.price != null &&
+      r.price >= MIN_PRICE_USD,
   );
   console.log(`[pipeline] fetched=${rows.length} kept=${kept.length}`);
 
