@@ -15,8 +15,15 @@ export function formatScanColumn(scannedAt: string): string {
   const day = new Intl.DateTimeFormat("he-IL", { ...opts, day: "2-digit" }).format(date);
   const month = new Intl.DateTimeFormat("he-IL", { ...opts, month: "2-digit" }).format(date);
   const year = new Intl.DateTimeFormat("he-IL", { ...opts, year: "numeric" }).format(date);
-  const hour = new Intl.DateTimeFormat("he-IL", { ...opts, hour: "2-digit", hour12: false }).format(date);
-  const minute = new Intl.DateTimeFormat("he-IL", { ...opts, minute: "2-digit" }).format(date);
+  const parts = new Intl.DateTimeFormat("he-IL", {
+    ...opts,
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).formatToParts(date);
+  const get = (type: string) => parts.find((p) => p.type === type)?.value ?? "";
+  const hour = parseInt(get("hour"), 10).toString().padStart(2, "0");
+  const minute = parseInt(get("minute"), 10).toString().padStart(2, "0");
   return `${day}/${month}/${year} ${hour}:${minute}`;
 }
 
