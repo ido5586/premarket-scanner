@@ -72,6 +72,20 @@ export async function getLatestRun(): Promise<ScanRecord[]> {
   return (data ?? []) as ScanRecord[];
 }
 
+export async function getLatestScanForTicker(
+  ticker: string,
+): Promise<ScanRecord | null> {
+  const { data, error } = await getServerClient()
+    .from("premarket_scans")
+    .select("*")
+    .eq("ticker", ticker)
+    .order("scanned_at", { ascending: false })
+    .limit(1);
+  if (error) throw new Error(`Supabase ticker lookup failed: ${error.message}`);
+  if (!data || data.length === 0) return null;
+  return data[0] as ScanRecord;
+}
+
 export async function getAllScans(limit = 500): Promise<ScanRecord[]> {
   const { data, error } = await getServerClient()
     .from("premarket_scans")

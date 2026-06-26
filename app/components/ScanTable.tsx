@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { ScanRecord } from "@/lib/supabase";
 import {
   formatMarketCap,
@@ -42,7 +43,6 @@ export function ScanTable({ rows }: { rows: ScanRecord[] }) {
         <tr>
           <th>זמן סריקה</th>
           <th>Ticker</th>
-          <th>גרף</th>
           <th>Float</th>
           <th>Score</th>
           <th>Pre %</th>
@@ -58,24 +58,9 @@ export function ScanTable({ rows }: { rows: ScanRecord[] }) {
           <tr key={`${r.scan_run_id}-${r.ticker}`}>
             <td>{formatScanColumn(r.scanned_at)}</td>
             <td>
-              <a
-                href={`https://finance.yahoo.com/quote/${r.ticker}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={linkStyle}
-              >
+              <Link href={`/stock/${r.ticker}`} style={linkStyle}>
                 {r.ticker}
-              </a>
-            </td>
-            <td>
-              <a
-                href={`https://www.tradingview.com/chart/?symbol=${r.ticker}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                title={`TradingView chart for ${r.ticker}`}
-              >
-                📈
-              </a>
+              </Link>
             </td>
             <td>{formatFloat(r.float_shares)}</td>
             <td style={{ color: scoreColor(r.momentum_score), fontWeight: 600 }}>
